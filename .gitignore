@@ -1,0 +1,19 @@
+# Environment & secrets
+.env
+*.env
+secrets/
+**/secrets/
+
+# Docker volumes & runtime data
+volumes/
+data/
+backups/
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
