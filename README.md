@@ -1,47 +1,43 @@
 ﻿# Homelab
 
-Personal homelab infrastructure, Docker stacks, and automation.
+Personal homelab configurations and notes. The goal is to keep everything easy to rebuild, easy to migrate, and hard to forget.
 
-## Goals
-- Reproducible setup
-- Easy migration to new hardware
-- Minimal manual configuration
-- Docker-first services
-- Clear separation of responsibilities
+## What lives where
+- `streaming/` — media and streaming stacks
+- `gaming/` — game servers and related tooling
+- `networking/` — core internal services (DNS, monitoring, utilities)
+- `edge/` — ingress, reverse proxy, TLS, and anything internet-facing
+- `scripts/` — small helper scripts
+- `docs/` — reference docs (inventory, IP plan, naming)
 
-## Architecture Overview
-- Proxmox hypervisor
+## Principles
+- Treat VMs as disposable; treat data as persistent.
+- Keep configuration in Git; keep secrets out of Git.
+- Prefer simple, repeatable setups over hand-tuned snowflakes.
+
+## Architecture (high level)
+- Proxmox as the hypervisor
 - Ubuntu Server VMs (template-based)
-- Docker + Docker Compose
-- Central data disk mounted at /mnt/data
+- Docker + Docker Compose for services
+- Persistent data under `/mnt/data`
 
-## VM Categories
-- Streaming
-- Gaming
-- Networking
-- Edge Proxy
+## IPs & naming
+- Services use static IPs (typically `.100`–`.254`).
+- VM names include the last octet of the IP.
 
-## Data Philosophy
-- One central data disk (`/mnt/data`)
-- Services consume folders, not disks
-- VMs are disposable, data is persistent
+Examples:
+- `160-streaming`
+- `110-networking`
+- `130-edge`
 
-## Repository Structure
-- `streaming/`  : media-related stacks
-- `gaming/`     : game server stacks
-- `networking/` : monitoring and internal services
-- `edge/`       : reverse proxy and ingress
-- `scripts/`    : automation helpers
-- `docs/`       : documentation and runbook
+## How I deploy things
+Each folder is meant to be self-contained. The usual pattern is:
+1. Create a VM from the Ubuntu template
+2. Make `/mnt/data` available if the stack needs persistence
+3. Clone this repo
+4. Create a local `.env` (don’t commit it)
+5. Run the stack (usually `docker compose up -d`)
 
-## Deployment Model
-1. Clone this repository
-2. Copy `.env.example` -> `.env`
-3. Fill required values
-4. Run `docker compose up -d`
-
-## Notes
-This repository intentionally excludes:
-- Secrets
-- Docker volumes
-- Media data
+## What’s intentionally not in Git
+- Secrets (`.env`, credentials, tokens)
+- Runtime data (Docker volumes, backups, media)
