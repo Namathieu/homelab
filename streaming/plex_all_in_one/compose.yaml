@@ -93,6 +93,7 @@ services:
     cap_add:
       - NET_ADMIN
     volumes:
+      - /mnt/data/streaming/downloads:/downloads
       - /mnt/data/streaming/media:/Media
       - /home/nama/config/transmission_openvpn:/config
     environment:
