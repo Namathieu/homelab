@@ -6,9 +6,9 @@ services:
     stdin_open: true
     tty: true
     ports:
-      - "25600:25565/tcp"
+      - "25601:25565/tcp"
     volumes:
-      - /mnt/data/gaming/minecraft/proxy/french_smp/namathieu:/app
+      - /mnt/data/gaming/minecraft/proxy/french_smp/namathieu:/config
 
   # ------------------------------------------------------------
   # Future accounts (commented out)
