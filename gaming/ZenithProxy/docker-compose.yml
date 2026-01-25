@@ -1,0 +1,62 @@
+services:
+  zenith-proxy-account1:
+    build: ./
+    container_name: zenith-proxy-account1
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    ports:
+      - "25600:25565/tcp"
+    volumes:
+      - /mnt/data/gaming/minecraft/proxy/french_smp/namathieu:/app
+
+  # ------------------------------------------------------------
+  # Future accounts (commented out)
+  # Each account must use:
+  # - a different HOST port (left side)
+  # - a different folder under /mnt/data (right side is always /app)
+  # ------------------------------------------------------------
+
+  # zenith-proxy-account2:
+  #   build: ./
+  #   container_name: zenith-proxy-account2
+  #   restart: unless-stopped
+  #   stdin_open: true
+  #   tty: true
+  #   ports:
+  #     - "25601:25565/tcp"
+  #   volumes:
+  #     - /mnt/data/gaming/minecraft/proxy/french_smp/account2:/app
+
+  # zenith-proxy-account3:
+  #   build: ./
+  #   container_name: zenith-proxy-account3
+  #   restart: unless-stopped
+  #   stdin_open: true
+  #   tty: true
+  #   ports:
+  #     - "25602:25565/tcp"
+  #   volumes:
+  #     - /mnt/data/gaming/minecraft/proxy/french_smp/account3:/app
+
+  # zenith-proxy-account4:
+  #   build: ./
+  #   container_name: zenith-proxy-account4
+  #   restart: unless-stopped
+  #   stdin_open: true
+  #   tty: true
+  #   ports:
+  #     - "25603:25565/tcp"
+  #   volumes:
+  #     - /mnt/data/gaming/minecraft/proxy/french_smp/account4:/app
+
+  # zenith-proxy-account5:
+  #   build: ./
+  #   container_name: zenith-proxy-account5
+  #   restart: unless-stopped
+  #   stdin_open: true
+  #   tty: true
+  #   ports:
+  #     - "25604:25565/tcp"
+  #   volumes:
+  #     - /mnt/data/gaming/minecraft/proxy/french_smp/account5:/app
