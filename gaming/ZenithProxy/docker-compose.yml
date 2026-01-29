@@ -17,16 +17,16 @@ services:
   # - a different folder under /mnt/data (right side is always /app)
   # ------------------------------------------------------------
 
-  # zenith-proxy-account2:
-  #   build: ./
-  #   container_name: zenith-proxy-account2
-  #   restart: unless-stopped
-  #   stdin_open: true
-  #   tty: true
-  #   ports:
-  #     - "25601:25565/tcp"
-  #   volumes:
-  #     - /mnt/data/gaming/minecraft/proxy/french_smp/account2:/app
+  zenith-proxy-account2:
+     build: ./
+     container_name: zenith-proxy-account2
+     restart: unless-stopped
+     stdin_open: true
+     tty: true
+     ports:
+       - "25601:25565/tcp"
+     volumes:
+       - /mnt/data/gaming/minecraft/proxy/french_smp/uganda:/app
 
   # zenith-proxy-account3:
   #   build: ./
