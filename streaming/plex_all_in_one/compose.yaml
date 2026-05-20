@@ -5,25 +5,27 @@ services:
     network_mode: host
     environment:
       - PUID=1000
-      - PGID=1000
+      - PGID=2000
       - TZ=America/Montreal
       - VERSION=docker
-#      - PLEX_CLAIM=${PLEX_CLAIM}
+      - UMASK=002
     volumes:
       - /home/nama/config/plex:/config
-      - /mnt/data/streaming/media:/Media
+      - /mnt/data/streaming/media:/data/media
     restart: unless-stopped
+
   overseerr:
     image: sctx/overseerr:latest
     container_name: overseerr
     environment:
-      - LOG_LEVEL=debug
+      - LOG_LEVEL=info
       - TZ=America/Montreal
     ports:
       - 5055:5055
     volumes:
-      - /home/nama/config/overseerr:/config
+      - /home/nama/config/overseerr:/app/config
     restart: unless-stopped
+
   jackett:
     image: linuxserver/jackett:latest
     container_name: jackett
@@ -32,17 +34,18 @@ services:
       - 1.0.0.1
     environment:
       - PUID=1000
-      - PGID=1000
+      - PGID=2000
       - TZ=America/Montreal
       - AUTO_UPDATE=true
+      - UMASK=002
     volumes:
       - /home/nama/config/jackett:/config
-      - /mnt/data/streaming/download:/download
+      - /mnt/data/streaming:/data
     ports:
       - 9117:9117
     restart: unless-stopped
+
   flaresolverr:
-    # DockerHub mirror flaresolverr/flaresolverr:latest
     image: ghcr.io/flaresolverr/flaresolverr:latest
     container_name: flaresolverr
     environment:
@@ -53,6 +56,7 @@ services:
     ports:
       - 8191:8191
     restart: unless-stopped
+
   radarr:
     image: linuxserver/radarr:latest
     container_name: radarr
@@ -61,14 +65,16 @@ services:
       - 1.0.0.1
     environment:
       - PUID=1000
-      - PGID=1000
+      - PGID=2000
       - TZ=America/Montreal
+      - UMASK=002
     volumes:
       - /home/nama/config/radarr:/config
-      - /mnt/data/streaming/media:/Media
+      - /mnt/data/streaming:/data
     ports:
       - 7878:7878
     restart: unless-stopped
+
   sonarr:
     image: linuxserver/sonarr:latest
     container_name: sonarr
@@ -77,49 +83,51 @@ services:
       - 1.0.0.1
     environment:
       - PUID=1000
-      - PGID=1000
+      - PGID=2000
       - TZ=America/Montreal
+      - UMASK=002
     volumes:
       - /home/nama/config/sonarr:/config
-      - /mnt/data/streaming/media:/Media
+      - /mnt/data/streaming:/data
     ports:
       - 8989:8989
     restart: unless-stopped
-  transmission-openvpn:
-    container_name: transmission-ovpn
-    dns:
-      - 1.1.1.1
-      - 1.0.0.1
+
+  gluetun:
+    image: qmcgaw/gluetun:latest
+    container_name: gluetun
     cap_add:
       - NET_ADMIN
-    volumes:
-      - /mnt/data/streaming/downloads:/downloads
-      - /mnt/data/streaming/media:/Media
-      - /home/nama/config/transmission_openvpn:/config
-    environment:
-      - LOCAL_NETWORK=192.168.2.0/24
-      - TRANSMISSION_SPEED_LIMIT_UP=0
-      - TRANSMISSION_SPEED_LIMIT_UP_ENABLED=true
-      - TRANSMISSION_RATIO_LIMIT=0
-      - TRANSMISSION_RATIO_LIMIT_ENABLED=true
-      - TRANSMISSION_DOWNLOAD_QUEUE_ENABLED=true
-      - TRANSMISSION_DOWNLOAD_QUEUE_SIZE=9999
-      - TRANSMISSION_MAX_PEER_GLOBAL=99999
-      - TRANSMISSION_PEER_LIMIT_GLOBAL=9999
-      - TRANSMISSION_PEER_LIMIT_PER_TORRENT=9999
-      - TRANSMISSION_DOWNLOAD_DIR=/Media/Torrent
-      - TRANSMISSION_INCOMPLETE_DIR_ENABLED=false
-      - TRANSMISSION_WEB_UI=transmission-web-control
-      - OPENVPN_PROVIDER=PIA
-      - OPENVPN_CONFIG=bahamas
-      - OPENVPN_USERNAME=${OPENVPN_USERNAME}
-      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
-    logging:
-      driver: json-file
-      options:
-        max-size: 10m
+    devices:
+      - /dev/net/tun:/dev/net/tun
     ports:
-      - 9091:9091
-    image: haugene/transmission-openvpn:latest
+      - 8080:8080
+      - 6881:6881/tcp
+      - 6881:6881/udp
+    environment:
+      - VPN_SERVICE_PROVIDER=private internet access
+      - VPN_TYPE=openvpn
+      - OPENVPN_USER=${OPENVPN_USERNAME}
+      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
+      - SERVER_REGIONS=Bahamas
+      - TZ=America/Montreal
+      - FIREWALL=on
+      - DOT=off
+      - LOCAL_NETWORK=192.168.2.0/24
+      - UPDATER_PERIOD=24h
     restart: unless-stopped
-networks: {}
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    network_mode: service:gluetun
+    environment:
+      - PUID=1000
+      - PGID=2000
+      - TZ=America/Montreal
+      - WEBUI_PORT=8080
+      - UMASK=002
+    volumes:
+      - /home/nama/config/qbittorrent:/config
+      - /mnt/data/streaming:/data
+    restart: unless-stopped
