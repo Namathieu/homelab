@@ -1,0 +1,39 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+
+    runtime: nvidia
+
+    networks:
+      - jellyfin-network
+
+    environment:
+      - PUID=1000
+      - PGID=2000
+      - TZ=America/Montreal
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
+
+    volumes:
+      - /mnt/data/streaming/config/jellyfin:/config
+      - /mnt/data/streaming/config/jellyfin/cache:/cache
+      - /mnt/data/streaming:/data
+
+    ports:
+      - "8096:8096"
+
+    restart: unless-stopped
+
+    security_opt:
+      - no-new-privileges:true
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  jellyfin-network:
+    driver: bridge
