@@ -9,6 +9,16 @@ services:
     ports:
       - 9443:9443
       - 8000:8000  # To use Edge Agents
+    networks:
+      - default
+      - proxy
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.portainer.rule=Host(`portainer.edge.home.lab`)
+      - traefik.http.routers.portainer.entrypoints=web
+      - traefik.http.routers.portainer.middlewares=security-headers@file
+      - traefik.http.services.portainer.loadbalancer.server.port=9000
 
 volumes:
   portainer_data:
@@ -17,3 +27,5 @@ volumes:
 networks:
   default:
     name: portainer_network
+  proxy:
+    external: true

@@ -1,0 +1,22 @@
+# Python/local environment
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Repository/local secrets
+.git/
+.env
+
+# Runtime data mounted by docker compose
+/database/
+/database/*.db
+/database/*.db-*
+/backups/
+/backups/*.db
+/backups/*.tmp
+/logs/
+/logs/*
+*.log

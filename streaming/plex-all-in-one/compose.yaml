@@ -2,17 +2,29 @@ services:
   plex:
     image: linuxserver/plex:latest
     container_name: plex
-    network_mode: host
+    networks:
+      - default
+      - proxy
     environment:
       - PUID=1000
       - PGID=2000
       - TZ=America/Montreal
       - VERSION=docker
       - UMASK=002
+      - ADVERTISE_IP=http://plex.edge.home.lab:80/
     volumes:
       - /home/nama/config/plex:/config
       - /mnt/data/streaming/media:/data/media
+    ports:
+      - 32400:32400
     restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.plex.rule=Host(`plex.edge.home.lab`)
+      - traefik.http.routers.plex.entrypoints=web
+      - traefik.http.routers.plex.middlewares=security-headers@file
+      - traefik.http.services.plex.loadbalancer.server.port=32400
 
   overseerr:
     image: sctx/overseerr:latest
@@ -25,6 +37,14 @@ services:
     volumes:
       - /home/nama/config/overseerr:/app/config
     restart: unless-stopped
+    networks: [default, proxy]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.overseerr.rule=Host(`overseerr.edge.home.lab`)
+      - traefik.http.routers.overseerr.entrypoints=web
+      - traefik.http.routers.overseerr.middlewares=security-headers@file
+      - traefik.http.services.overseerr.loadbalancer.server.port=5055
 
   jackett:
     image: linuxserver/jackett:latest
@@ -44,6 +64,14 @@ services:
     ports:
       - 9117:9117
     restart: unless-stopped
+    networks: [default, proxy]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.jackett.rule=Host(`jackett.edge.home.lab`)
+      - traefik.http.routers.jackett.entrypoints=web
+      - traefik.http.routers.jackett.middlewares=security-headers@file
+      - traefik.http.services.jackett.loadbalancer.server.port=9117
 
   flaresolverr:
     image: ghcr.io/flaresolverr/flaresolverr:latest
@@ -56,6 +84,14 @@ services:
     ports:
       - 8191:8191
     restart: unless-stopped
+    networks: [default, proxy]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.flaresolverr.rule=Host(`flaresolverr.edge.home.lab`)
+      - traefik.http.routers.flaresolverr.entrypoints=web
+      - traefik.http.routers.flaresolverr.middlewares=security-headers@file
+      - traefik.http.services.flaresolverr.loadbalancer.server.port=8191
 
   radarr:
     image: linuxserver/radarr:latest
@@ -74,6 +110,14 @@ services:
     ports:
       - 7878:7878
     restart: unless-stopped
+    networks: [default, proxy]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.radarr.rule=Host(`radarr.edge.home.lab`)
+      - traefik.http.routers.radarr.entrypoints=web
+      - traefik.http.routers.radarr.middlewares=security-headers@file
+      - traefik.http.services.radarr.loadbalancer.server.port=7878
 
   sonarr:
     image: linuxserver/sonarr:latest
@@ -92,6 +136,14 @@ services:
     ports:
       - 8989:8989
     restart: unless-stopped
+    networks: [default, proxy]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.sonarr.rule=Host(`sonarr.edge.home.lab`)
+      - traefik.http.routers.sonarr.entrypoints=web
+      - traefik.http.routers.sonarr.middlewares=security-headers@file
+      - traefik.http.services.sonarr.loadbalancer.server.port=8989
 
   gluetun:
     image: qmcgaw/gluetun:latest
@@ -112,10 +164,19 @@ services:
       - SERVER_REGIONS=Bahamas
       - TZ=America/Montreal
       - FIREWALL=on
+      - FIREWALL_INPUT_PORTS=8080
       - DOT=off
       - LOCAL_NETWORK=192.168.2.0/24
       - UPDATER_PERIOD=24h
     restart: unless-stopped
+    networks: [default, proxy]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.qbittorrent.rule=Host(`qbittorrent.edge.home.lab`)
+      - traefik.http.routers.qbittorrent.entrypoints=web
+      - traefik.http.routers.qbittorrent.middlewares=security-headers@file
+      - traefik.http.services.qbittorrent.loadbalancer.server.port=8080
 
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
@@ -131,3 +192,7 @@ services:
       - /home/nama/config/qbittorrent:/config
       - /mnt/data/streaming:/data
     restart: unless-stopped
+
+networks:
+  proxy:
+    external: true

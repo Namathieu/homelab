@@ -1,0 +1,78 @@
+services:
+  zenith-proxy-namathieu:
+    build: ./
+    container_name: zenith-proxy-namathieu
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    ports:
+      - "25600:25565/tcp"
+    volumes:
+      - /mnt/data/gaming/minecraft/proxy/french_smp/namathieu:/config
+
+  zenith-proxy-uganda:
+     build: ./
+     container_name: zenith-proxy-uganda
+     restart: unless-stopped
+     stdin_open: true
+     tty: true
+     ports:
+       - "25601:25565/tcp"
+     volumes:
+       - /mnt/data/gaming/minecraft/proxy/french_smp/uganda:/app
+
+  zenith-proxy-mc1:
+    build: ./
+    container_name: zenith-proxy-mc1
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    ports:
+      - "25602:25565/tcp"
+    volumes:
+      - /mnt/data/gaming/minecraft/proxy/french_smp/mc1:/app
+
+  zenith-proxy-mc2:
+    build: ./
+    container_name: zenith-proxy-mc2
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    ports:
+      - "25603:25565/tcp"
+    volumes:
+      - /mnt/data/gaming/minecraft/proxy/french_smp/mc2:/app
+
+  zenith-proxy-mc3:
+    build: ./
+    container_name: zenith-proxy-mc3
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    ports:
+      - "25604:25565/tcp"
+    volumes:
+      - /mnt/data/gaming/minecraft/proxy/french_smp/mc3:/app
+
+  zenith-proxy-nama_produce:
+    build: ./
+    container_name: zenith-proxy-nama_produce
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    ports:
+      - "25605:25565/tcp"
+    volumes:
+      - /mnt/data/gaming/minecraft/proxy/produce/Nama:/app
+
+  zenith-proxy-nama_2b2fr:
+    build: ./
+    container_name: zenith-proxy-nama_2b2fr
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    ports:
+      - "25606:25565/tcp"
+    volumes:
+      - /mnt/data/gaming/minecraft/proxy/2b2fr/Nama:/app
+

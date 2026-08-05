@@ -1,0 +1,21 @@
+services:
+  foundry12:
+    image: felddy/foundryvtt:12
+    container_name: foundry-vtt-v12
+    restart: unless-stopped
+
+    volumes:
+      - /mnt/data/gaming/foundryvtt/V12:/data
+    
+    environment:
+      FOUNDRY_USERNAME: ${FOUNDRY_USERNAME}
+      FOUNDRY_PASSWORD: ${FOUNDRY_PASSWORD}
+      FOUNDRY_ADMIN_KEY: ${FOUNDRY_ADMIN_KEY}
+      CONTAINER_PRESERVE_CONFIG: ${CONTAINER_PRESERVE_CONFIG}
+      TZ: ${TZ}
+      FOUNDRY_PROXY_SSL: "true"
+      FOUNDRY_PROXY_PORT: "443"
+      FOUNDRY_HOSTNAME: "hpttrpg.namathieu.site"
+
+    ports:
+      - "30000:30000"

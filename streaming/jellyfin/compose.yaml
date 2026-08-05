@@ -7,6 +7,7 @@ services:
 
     networks:
       - jellyfin-network
+      - proxy
 
     environment:
       - PUID=1000
@@ -34,6 +35,16 @@ services:
         max-size: "10m"
         max-file: "3"
 
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.jellyfin.rule=Host(`jellyfin.edge.home.lab`)
+      - traefik.http.routers.jellyfin.entrypoints=web
+      - traefik.http.routers.jellyfin.middlewares=security-headers@file
+      - traefik.http.services.jellyfin.loadbalancer.server.port=8096
+
 networks:
   jellyfin-network:
     driver: bridge
+  proxy:
+    external: true

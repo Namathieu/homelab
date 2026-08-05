@@ -5,6 +5,19 @@ secrets/
 **/secrets/
 **/letsencrypt/
 
+# Python environments and build artifacts
+venv/
+.venv/
+**/venv/
+**/.venv/
+__pycache__/
+*.pyc
+
+# Private certs and keys
+*.key
+*.pem
+edge/traefik/certs/local.crt
+
 # Docker volumes & runtime data
 volumes/
 data/
