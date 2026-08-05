@@ -3,6 +3,7 @@
 *.env
 secrets/
 **/secrets/
+**/letsencrypt/
 
 # Docker volumes & runtime data
 volumes/
